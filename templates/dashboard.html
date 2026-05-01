@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #020617; 
+            color: white;
+            background-image: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* FIX: Makes dropdown text visible on dark backgrounds */
+        select option {
+            background-color: #1e1b4b !important; 
+            color: white !important;
+        }
+
+        .stat-glow-indigo { box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.2); }
+        .stat-glow-emerald { box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.2); }
+        .stat-glow-amber { box-shadow: 0 0 40px -10px rgba(245, 158, 11, 0.2); }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-20">
+
+    <nav class="px-10 py-6 border-b border-white/5 flex justify-between items-center bg-black/20 backdrop-blur-md sticky top-0 z-40">
+        <span class="text-2xl font-black text-indigo-400 italic tracking-tighter uppercase">Stratos.</span>
+        <div class="flex items-center gap-6">
+            <div class="text-right">
+                <p class="text-sm font-bold">{{ current_user.username }}</p>
+                <p class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.2em]">{{ current_user.role }}</p>
+            </div>
+            <a href="/logout" class="bg-white/5 hover:bg-rose-500/20 p-3 rounded-xl border border-white/10 transition-all">
+                <i class="fa-solid fa-right-from-bracket text-rose-400 text-sm"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-8 mt-12">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <h1 class="text-6xl font-black tracking-tighter">Command Center.</h1>
+            {% if current_user.role == 'Admin' %}
+            <div class="flex gap-4">
+                <button onclick="openModal('projModal')" class="bg-white/5 hover:bg-white/10 px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/10 transition-all">New Project</button>
+                <button onclick="openModal('taskModal')" class="bg-indigo-600 hover:bg-indigo-500 px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-indigo-500/20">Add Task</button>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- STATS GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+            <div class="glass-card stat-glow-indigo p-8 rounded-[2.5rem]">
+                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">Active Tasks</p>
+                <h2 class="text-5xl font-black">{{ stats.total_tasks }}</h2>
+            </div>
+            <div class="glass-card stat-glow-emerald p-8 rounded-[2.5rem]">
+                <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">Completed</p>
+                <h2 class="text-5xl font-black text-emerald-400">{{ stats.completed_tasks }}</h2>
+            </div>
+            <div class="glass-card p-8 rounded-[2.5rem]">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Team Fleet</p>
+                <h2 class="text-5xl font-black">{{ stats.team_count }}</h2>
+            </div>
+            <div class="glass-card stat-glow-amber p-8 rounded-[2.5rem]">
+                <p class="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-2">Projects</p>
+                <h2 class="text-5xl font-black">{{ stats.total_projects }}</h2>
+            </div>
+        </div>
+
+        <!-- PROJECTS SECTION -->
+        <div class="space-y-12">
+            {% for p in projects %}
+            <div class="glass-card rounded-[3.5rem] overflow-hidden">
+                <div class="p-10 border-b border-white/5 bg-white/[0.01] flex justify-between items-center">
+                    <div>
+                        <h3 class="text-3xl font-black italic uppercase tracking-tighter text-indigo-300">{{ p.name }}</h3>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Project Status: Active</p>
+                    </div>
+                </div>
+
+                <div class="p-10 grid gap-4">
+                    {% for t in p.tasks %}
+                    <div class="flex items-center justify-between p-6 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all">
+                        <div class="flex items-center gap-6">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                                <i class="fa-solid fa-list-check text-indigo-400"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-3">
+                                    <h4 class="font-bold text-lg text-slate-200">{{ t.title }}</h4>
+                                    <!-- PRIORITY BADGE -->
+                                    <span class="text-[8px] font-black px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest
+                                        {% if t.priority == 'High' %}text-rose-400 bg-rose-400/10 border-rose-400/20
+                                        {% elif t.priority == 'Medium' %}text-amber-400 bg-amber-400/10 border-amber-400/20
+                                        {% else %}text-emerald-400 bg-emerald-400/10 border-emerald-400/20{% endif %}">
+                                        {{ t.priority }}
+                                    </span>
+                                </div>
+                                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">
+                                    Assigned to: <span class="text-indigo-400">{{ t.assigned_to.username }}</span> 
+                                    {% if t.due_date %}
+                                    <span class="mx-2 text-white/10">|</span>
+                                    <i class="fa-regular fa-calendar-days mr-1 text-indigo-500"></i> Due: <span class="text-slate-300">{{ t.due_date }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        {% if current_user.role == 'Admin' %}
+                        <form action="{{ url_for('tasks.update_status', task_id=t.id) }}" method="POST">
+                            <select onchange="this.form.submit()" name="status" class="bg-slate-900 border border-white/10 rounded-xl px-5 py-2 text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer">
+                                <option value="Todo" {% if t.status == 'Todo' %}selected{% endif %}>Todo</option>
+                                <option value="In Progress" {% if t.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                <option value="Done" {% if t.status == 'Done' %}selected{% endif %}>Complete</option>
+                            </select>
+                        </form>
+                        {% else %}
+                        <div class="bg-white/5 border border-white/10 rounded-xl px-5 py-2 text-[10px] font-black uppercase tracking-widest text-indigo-400">
+                            {{ t.status }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="text-center text-slate-600 text-[10px] font-black uppercase tracking-widest py-4">No tasks found in this project</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- MODALS -->
+    {% if current_user.role == 'Admin' %}
+    <div id="projModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-xl flex items-center justify-center z-50 p-6">
+        <form action="{{ url_for('projects.add_project') }}" method="POST" class="glass-card p-12 rounded-[3rem] w-full max-w-md">
+            <h3 class="text-2xl font-black mb-8 uppercase italic text-indigo-400">New Project</h3>
+            <input type="text" name="name" class="w-full bg-slate-900 border border-white/10 p-5 rounded-2xl mb-6 outline-none text-white" placeholder="Project Name" required>
+            <div class="flex gap-4">
+                <button type="submit" class="flex-1 bg-indigo-600 py-4 rounded-2xl font-black uppercase text-[10px]">Create</button>
+                <button type="button" onclick="closeModal('projModal')" class="flex-1 bg-white/5 py-4 rounded-2xl font-black uppercase text-[10px]">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="taskModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-xl flex items-center justify-center z-50 p-6">
+        <form action="{{ url_for('tasks.add_task') }}" method="POST" class="glass-card p-12 rounded-[3rem] w-full max-w-md">
+            <h3 class="text-2xl font-black mb-8 uppercase italic text-indigo-400">Assign Task</h3>
+            <div class="space-y-4">
+                <select name="project_id" class="w-full bg-slate-900 border border-white/10 p-4 rounded-2xl text-white">
+                    {% for p in projects %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+                </select>
+                <input type="text" name="title" class="w-full bg-slate-900 border border-white/10 p-4 rounded-2xl text-white" placeholder="What needs to be done?" required>
+                <div class="grid grid-cols-2 gap-4">
+                    <select name="priority" class="w-full bg-slate-900 border border-white/10 p-4 rounded-2xl text-white">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                    <input type="date" name="due_date" class="w-full bg-slate-900 border border-white/10 p-4 rounded-2xl text-white">
+                </div>
+                <select name="user_id" class="w-full bg-slate-900 border border-white/10 p-4 rounded-2xl text-white">
+                    {% for u in users %}<option value="{{ u.id }}">{{ u.username }}</option>{% endfor %}
+                </select>
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-indigo-600 py-4 rounded-2xl font-black uppercase text-[10px]">Assign</button>
+                    <button type="button" onclick="closeModal('taskModal')" class="flex-1 bg-white/5 py-4 rounded-2xl font-black uppercase text-[10px]">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <script>
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    </script>
+</body>
+</html>

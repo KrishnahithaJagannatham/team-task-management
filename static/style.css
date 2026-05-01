@@ -1,0 +1,71 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f7fb;
+}
+
+.container {
+    padding: 20px;
+}
+
+.cards {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.card {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.section {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+input, select {
+    padding: 10px;
+    margin: 5px;
+}
+
+button {
+    padding: 10px;
+    background: green;
+    color: white;
+    border: none;
+}
+
+.project-card {
+    background: #eef3ff;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.task-card {
+    background: #fff;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+.overdue {
+    border-left: 5px solid red;
+}
+
+.done-btn {
+    background: gray;
+}
+
+#toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: black;
+    color: white;
+    padding: 10px;
+    display: none;
+}

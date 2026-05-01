@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #0f172a; 
+            overflow: hidden; 
+        }
+
+        /* Ambient Background Glows */
+        .blob { 
+            position: absolute; 
+            width: 450px; 
+            height: 450px; 
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); 
+            filter: blur(90px); 
+            border-radius: 50%; 
+            z-index: -1; 
+            opacity: 0.25; 
+            animation: float 15s infinite alternate;
+        }
+
+        @keyframes float {
+            from { transform: translate(0, 0); }
+            to { transform: translate(10%, 15%); }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: rgba(99, 102, 241, 0.5) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+        }
+    </style>
+</head>
+<body class="h-screen flex items-center justify-center p-6 text-white">
+    
+    <!-- Decorative Blobs -->
+    <div class="blob" style="top: 10%; left: 20%;"></div>
+    <div class="blob" style="bottom: 10%; right: 20%; background: #4f46e5;"></div>
+    
+    <div class="max-w-md w-full glass p-10 md:p-14 rounded-[3.5rem] relative">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-black italic tracking-tighter uppercase text-indigo-400">Stratos.</h1>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-3">Welcome Back</p>
+        </div>
+        
+        <form action="/login" method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Username</label>
+                <input type="text" name="username" class="w-full p-4 rounded-2xl outline-none text-white placeholder-slate-600" placeholder="Enter your username" required>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                <input type="password" name="password" class="w-full p-4 rounded-2xl outline-none text-white placeholder-slate-600" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 mt-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98]">
+                Login
+            </button>
+        </form>
+        
+        <div class="mt-10 text-center border-t border-white/5 pt-8">
+            <p class="text-xs font-medium text-slate-500">
+                New to Stratos? 
+                <a href="/signup" class="ml-1 font-black text-indigo-400 hover:text-indigo-300 uppercase tracking-tighter transition-colors">
+                    Create Account
+                </a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

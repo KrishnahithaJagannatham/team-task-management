@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #0f172a;
+            overflow: hidden;
+        }
+        /* Animated Background Blobs */
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.4;
+            animation: move 20s infinite alternate;
+        }
+        @keyframes move {
+            from { transform: translate(-10%, -10%); }
+            to { transform: translate(20%, 20%); }
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        input, select {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="h-screen flex items-center justify-center p-6 text-white">
+    <div class="blob" style="top: -10%; left: -10%;"></div>
+    <div class="blob" style="bottom: -10%; right: -10%; background: #4f46e5;"></div>
+
+    <div class="max-w-4xl w-full grid md:grid-cols-2 glass rounded-[3rem] overflow-hidden">
+        <div class="p-12 flex flex-col justify-between bg-white/5">
+            <div>
+                <h1 class="text-3xl font-black italic tracking-tighter uppercase text-indigo-400">Stratos.</h1>
+                <p class="text-slate-400 text-sm mt-2 uppercase tracking-widest font-bold">Registration Portal</p>
+            </div>
+            <h2 class="text-5xl font-extrabold leading-tight tracking-tighter">Design your <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">workflow.</span></h2>
+            <p class="text-slate-400 text-sm">Join the next generation of task management.</p>
+        </div>
+        <div class="p-12">
+            <form action="/signup" method="POST" class="space-y-5">
+                <input type="text" name="username" class="w-full p-4 rounded-2xl outline-none text-white placeholder-slate-500" placeholder="Username" required>
+                <input type="email" name="email" class="w-full p-4 rounded-2xl outline-none text-white placeholder-slate-500" placeholder="Email Address" required>
+                <input type="password" name="password" class="w-full p-4 rounded-2xl outline-none text-white placeholder-slate-500" placeholder="Password" required>
+                <select name="role" class="w-full p-4 rounded-2xl outline-none text-slate-400 cursor-pointer">
+                    <option value="Member">Team Member</option>
+                    <option value="Admin">Project Admin</option>
+                </select>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-black uppercase tracking-[0.2em] transition-all shadow-lg shadow-indigo-500/20">Create Account</button>
+            </form>
+            <p class="text-center mt-6 text-slate-500 text-xs font-bold tracking-widest">
+                Already a member? <a href="/login" class="text-indigo-400">Login</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
